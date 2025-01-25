@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .shape-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .shape {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            opacity: 1;
+            transform: translate(-50%, -50%);
+            border-top: 3px solid #00ff9d;
+            border-left: 3px solid #00ff9d;
+            border-right: 3px solid #00ff9d;
+            border-bottom: none;
+            animation: growAndFade 4s linear forwards;
+        }
+
+        @keyframes growAndFade {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            75% {
+                width: 150px;
+                height: 150px;
+                opacity: 0.7;
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shape-container" id="shape-container"></div>
+
+    <script>
+        const container = document.getElementById('shape-container');
+        let activeShapes = 0;
+        const maxShapes = 3;
+
+        function createShape() {
+            if (activeShapes >= maxShapes) return;
+            
+            const shape = document.createElement('div');
+            shape.className = 'shape';
+            container.appendChild(shape);
+            activeShapes++;
+
+            shape.addEventListener('animationend', () => {
+                container.removeChild(shape);
+                activeShapes--;
+                createShape(); // Replace with new shape
+            });
+        }
+
+        // Initial creation with staggered delays
+        for (let i = 0; i < maxShapes; i++) {
+            setTimeout(createShape, i * 1300); // Stagger initial creations
+        }
+    </script>
+</body>
+</html>
