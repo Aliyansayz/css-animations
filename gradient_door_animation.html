@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .shape-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            filter: drop-shadow(0 0 15px rgba(150, 0, 255, 0.3));
+        }
+
+        .shape {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            opacity: 1;
+            transform: translate(-50%, -50%);
+            border-top: 3px solid;
+            border-left: 3px solid;
+            border-right: 3px solid;
+            border-bottom: none;
+            animation: growAndFade 4s linear forwards;
+            --purple-start: hsl(270, 100%, 70%); /* Brighter purple */
+            --purple-mid: hsl(270, 100%, 60%); /* Mid-tone purple */
+            --purple-end: hsl(280, 100%, 40%); /* Darker purple */
+        }
+
+        .shape::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                var(--purple-start) 0%,
+                var(--purple-mid) 50%,
+                var(--purple-end) 100%
+            );
+            mask: linear-gradient(#000 0 0) content-box,
+                  linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            z-index: -1;
+        }
+
+        .shape::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(
+                circle at center,
+                rgba(150, 0, 255, 0.3) 0%,
+                transparent 70%
+            );
+            transform: translate(-50%, -50%);
+            filter: blur(20px);
+            z-index: -2;
+        }
+
+        @keyframes growAndFade {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                border-color: var(--purple-start);
+            }
+            75% {
+                width: 150px;
+                height: 150px;
+                opacity: 0.7;
+                border-color: var(--purple-end);
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+                border-color: var(--purple-end);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shape-container" id="shape-container"></div>
+
+    <script>
+        const container = document.getElementById('shape-container');
+        let activeShapes = 0;
+        const maxShapes = 3;
+
+        function createShape() {
+            if (activeShapes >= maxShapes) return;
+            
+            const shape = document.createElement('div');
+            shape.className = 'shape';
+            container.appendChild(shape);
+            activeShapes++;
+
+            shape.addEventListener('animationend', () => {
+                container.removeChild(shape);
+                activeShapes--;
+                createShape();
+            });
+        }
+
+        // Initial creation with staggered delays
+        for (let i = 0; i < maxShapes; i++) {
+            setTimeout(createShape, i * 1300);
+        }
+    </script>
+</body>
+</html>
