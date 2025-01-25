@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Ensure the body takes the full viewport height and center its content */
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a1a;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        /* Container for the squares */
+        .square-container {
+            position: relative;
+            width: 100px; /* Fixed size for the container */
+            height: 100px;
+        }
+
+        /* Styling for each square */
+        .square {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border: 3px solid #00ff9d;
+            opacity: 1;
+            transform: translate(-50%, -50%); /* Center the square */
+            animation: grow 3s ease-in-out forwards; /* Animation for growing the square */
+        }
+
+        /* Keyframes for the growing animation */
+        @keyframes grow {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Keyframes for fading out */
+        @keyframes fadeOut {
+            0% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Container where squares will be dynamically added -->
+    <div class="square-container" id="square-container">
+        <!-- Squares will be added here by JavaScript -->
+    </div>
+
+    <script>
+        // Get the container element
+        const container = document.getElementById('square-container');
+
+        // Function to create a new square
+        function createSquare() {
+            // Create a new div element
+            const square = document.createElement('div');
+            // Add the 'square' class to the new div
+            square.className = 'square';
+
+            // Randomize size
+            const size = Math.random() * 200 + 50; // Random size between 50px and 250px
+
+            // Apply random size
+            square.style.width = `${size}px`;
+            square.style.height = `${size}px`;
+
+            // Append the new square to the container
+            container.appendChild(square);
+
+            // If there are more than 5 squares, fade out and remove one randomly
+            if (container.children.length > 5) {
+                const squares = Array.from(container.children);
+                const randomSquare = squares[Math.floor(Math.random() * squares.length)]; // Pick a random square
+
+                // Fade out the random square
+                randomSquare.style.animation = 'fadeOut 0.5s ease-in-out forwards';
+
+                // Remove the square after the fade-out animation completes
+                setTimeout(() => {
+                    container.removeChild(randomSquare);
+                }, 500); // Match the duration of the fadeOut animation
+            }
+        }
+
+        // Create the initial set of 5 squares
+        for (let i = 0; i < 5; i++) {
+            createSquare();
+        }
+
+        // Add a new square every 3 seconds
+        setInterval(createSquare, 3000);
+    </script>
+</body>
+</html>
